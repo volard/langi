@@ -9,10 +9,11 @@ import java.time.Duration;
 @Service
 public class UserServiceImpl implements UserService{
 
+
     private final UserRepository userRepository;
 
     // TODO remove after experiments
-    private static final int DELAY_PER_ITEM_MS = 200;
+    private static final int DELAY_PER_ITEM_MS = 1000;
 
     public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;

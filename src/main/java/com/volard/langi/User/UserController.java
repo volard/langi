@@ -24,8 +24,8 @@ public class UserController {
      */
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    private Mono<User> save(@RequestBody @Validated User user) {
-        return this.userService.save(user);
+    private Mono<User> save(@RequestBody User user) {
+        System.out.println("ashta");return this.userService.save(user);
     }
 
     @DeleteMapping("/users/{id}")
@@ -48,10 +48,23 @@ public class UserController {
         return this.userService.findAll();
     }
 
+    @GetMapping(value = "/test")
+    private User test() {
+        User test = new User();
+        test.setUsername("asht");
+        test.setEmail("fovk u@aesht.at");
+        test.setPassword("345678");
+        test.setId("34567898888");
+        return test;
+    }
+
     @GetMapping(value = "/users/{id}")
+    @ResponseBody
     private Mono<ResponseEntity<User>> getById(@PathVariable String id){
-        return this.userService.findById(id).flatMap(
-                user1 -> Mono.just(ResponseEntity.ok(user1))
+        Mono<User> test = this.userService.findById(id);
+
+        return test.flatMap(
+                user1 -> Mono.just(ResponseEntity.ok().body(user1))
         ).switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 }
