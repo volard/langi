@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.2"
+    id("io.freefair.lombok") version "8.2.2"
 }
 
 group = "com.volard"
