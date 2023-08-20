@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService{
     private static final int DELAY_PER_ITEM_MS = 1000;
 
 
-
     @Override
     public Mono<User> registerUser(User user) {
         user.setAccountPassword(passwordEncoder.encode(user.getAccountPassword()));

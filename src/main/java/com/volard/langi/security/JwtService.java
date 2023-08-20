@@ -2,9 +2,7 @@ package com.volard.langi.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.security.Keys;
-
 import java.security.KeyPair;
 import java.util.Date;
 import java.util.UUID;
