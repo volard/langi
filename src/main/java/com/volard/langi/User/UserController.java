@@ -1,12 +1,16 @@
 package com.volard.langi.User;
 
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 @RestController
 public class UserController {
@@ -17,15 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    /**
-     * Saves provided user
-     * @param user provided User object
-     * @return
-     */
+
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     private Mono<User> save(@RequestBody User user) {
-        System.out.println("ashta");return this.userService.save(user);
+        return this.userService.registerUser(user);
     }
 
     @DeleteMapping("/users/{id}")
@@ -48,14 +48,12 @@ public class UserController {
         return this.userService.findAll();
     }
 
-    @GetMapping(value = "/test")
-    private User test() {
-        User test = new User();
-        test.setUsername("asht");
-        test.setEmail("fovk u@aesht.at");
-        test.setPassword("345678");
-        test.setId("34567898888");
-        return test;
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/decks")
+    private String test() {
+        return "some user's decks";
+
     }
 
     @GetMapping(value = "/users/{id}")

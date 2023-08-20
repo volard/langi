@@ -1,5 +1,8 @@
 package com.volard.langi.User;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -7,21 +10,21 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
-
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     // TODO remove after experiments
     private static final int DELAY_PER_ITEM_MS = 1000;
 
-    public UserServiceImpl(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
 
 
     @Override
-    public Mono<User> save(User user) {
+    public Mono<User> registerUser(User user) {
+        user.setAccountPassword(passwordEncoder.encode(user.getAccountPassword()));
         return this.userRepository.save(user);
     }
 
@@ -42,12 +45,24 @@ public class UserServiceImpl implements UserService{
     @Override
     public Flux<User> findAll() {
         // delay is for experimental purposes for now
-        // TODO remove delay after experiments
+        // TODO remove after experiments
         return userRepository.findAll().delayElements(Duration.ofMillis(DELAY_PER_ITEM_MS));
     }
 
     @Override
     public Mono<User> findById(String id) {
         return this.userRepository.findById(id);
+    }
+
+    @Override
+    public Mono<User> findByUsername(String username) {
+        // todo implement
+        return this.userRepository.findUserByUsername(username);
+    }
+
+    @Override
+    public Mono<UserDetails> updatePassword(UserDetails user, String newPassword) {
+        // todo implement
+        return null;
     }
 }
