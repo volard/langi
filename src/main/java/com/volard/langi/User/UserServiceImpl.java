@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +25,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Mono<User> registerUser(User user) {
-        user.setAccountPassword(passwordEncoder.encode(user.getAccountPassword()));
-        return this.userRepository.save(user);
+//        user.setAccountPassword(passwordEncoder.encode(user.getAccountPassword()));
+//        return this.userRepository.save(user);
+
+        return userRepository.findByUsername(user.getUsername())
+                .flatMap(__ -> Mono.error(new Exception("User already exists with username [" + user.getUsername() + "]")))
+                .switchIfEmpty(
+                        Mono.defer(() -> {
+                            user.setAccountPassword(passwordEncoder.encode(user.getAccountPassword()));
+                            return this.userRepository.save(user);
+                        })
+                ).cast(User.class);
     }
 
     @Override

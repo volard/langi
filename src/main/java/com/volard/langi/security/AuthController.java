@@ -19,21 +19,19 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public Mono<ResponseEntity<Object>> signup(@RequestBody User user){
+    public Mono<ResponseEntity<User>> signup(@RequestBody User user){
 
         return userService.registerUser(user).flatMap(
                 user1 -> {
-                    if (user1.equals(null)){
-                        return Mono.empty();
-                    }
-                    return Mono.just(ResponseEntity.ok().build());
-                }
-                )
-                .switchIfEmpty(Mono.just(ResponseEntity.internalServerError().build()));
+                    System.out.printf(
+                            "User with username [%s] and password [%s] was registered successfully under [%s] id%n",
+                            user1.getUsername(), user1.getPassword(), user1.getId());
+                    return Mono.just(new ResponseEntity<User>(user1, HttpStatus.CREATED));
+                });
     }
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<Void>> login(@RequestBody AuthRequestDto request){
+    public Mono<ResponseEntity<String>> login(@RequestBody AuthRequestDto request){
 
         return userService
                 .findByUsername(request.username())
@@ -41,6 +39,8 @@ public class AuthController {
                 .map(user -> {
                     String jwt = (new JwtService()).createJwt(user.getEmail());
                     // todo store jwt in the sessionStorage
-                }).switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()));
+                    return ResponseEntity.status(HttpStatus.OK).body(jwt);
+                })
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()));
     }
 }

@@ -25,7 +25,7 @@ import org.springframework.security.web.server.authentication.logout.WebSessionS
 @EnableWebFluxSecurity
 public class SecurityConfiguration   {
 
-    private final String [] publicRoutes = {"/", "/login", "/signup"};
+    private final String [] publicRoutes = {"/", "/login", "/signup", "/users/*"};
 
     // todo move to separate class for stronger encoding algorithm realisation
     @Bean
@@ -41,6 +41,7 @@ public class SecurityConfiguration   {
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
         http
+            .csrf(ServerHttpSecurity.CsrfSpec::disable) // todo unless I haven't understand this
             .authorizeExchange( exchanges -> exchanges
                 .pathMatchers(publicRoutes).permitAll()
                 .anyExchange().authenticated()

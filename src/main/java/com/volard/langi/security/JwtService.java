@@ -16,7 +16,7 @@ public class JwtService {
         return Jwts.builder()
                 .setIssuer("volard")
                 .setSubject(userId)
-                .setAudience("you")
+                .setAudience("langi_users")
                 .setExpiration(new Date(System.currentTimeMillis() + timeOffset))
                 .setIssuedAt((new Date()))
                 .setNotBefore(new Date())

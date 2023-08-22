@@ -3,6 +3,7 @@ package com.volard.langi.User;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +15,14 @@ import java.util.List;
 @NoArgsConstructor // Empty constructor is required by the data layer and JSON (maybe)
 @AllArgsConstructor
 @Data
-public class User implements UserDetails {
-    @Id private String id;
+public class User implements UserDetails, CredentialsContainer {
+    @Id
+    private String id;
     private String username;
     private String email;
     private String accountPassword;
     private boolean isActive = true;
-    private boolean isNonLocked = false;
+    private boolean isNonLocked = true;
     private boolean isNonExpired = true;
     private boolean isAccountNonExpired = true;
     private List<String> roles = List.of(Role.USER.toString());
@@ -58,5 +60,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isActive;
+    }
+
+    @Override
+    public void eraseCredentials() {
+        this.accountPassword = null;
     }
 }
