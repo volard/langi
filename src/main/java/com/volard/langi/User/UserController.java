@@ -1,6 +1,6 @@
 package com.volard.langi.User;
 
-import org.springframework.http.HttpStatus;
+import com.volard.langi.exception.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +14,6 @@ public class UserController {
 
     public UserController(UserService userService){
         this.userService = userService;
-    }
-
-
-    @PostMapping("/users")
-    @ResponseStatus(HttpStatus.CREATED)
-    private Mono<User> save(@RequestBody User user) {
-        return this.userService.registerUser(user);
     }
 
     @DeleteMapping("/users/{id}")
@@ -44,6 +37,8 @@ public class UserController {
     }
 
 
+
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping(value = "/decks")
     private String test() {
@@ -51,12 +46,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{id}")
-    @ResponseBody
     private Mono<ResponseEntity<User>> getById(@PathVariable String id){
-        Mono<User> test = this.userService.findById(id);
-
-        return test.flatMap(
+        return this.userService.findById(id).flatMap(
                 user1 -> Mono.just(ResponseEntity.ok().body(user1))
-        ).switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+        ).switchIfEmpty(Mono.error(new UserNotFoundException()));
     }
 }

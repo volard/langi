@@ -1,15 +1,15 @@
 package com.volard.langi.User;
 
+import com.volard.langi.exception.UserAlreadyExistsException;
+import com.volard.langi.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService{
 //        return this.userRepository.save(user);
 
         return userRepository.findByUsername(user.getUsername())
-                .flatMap(__ -> Mono.error(new Exception("User already exists with username [" + user.getUsername() + "]")))
+                .flatMap(__ -> Mono.error(new UserAlreadyExistsException()))
                 .switchIfEmpty(
                         Mono.defer(() -> {
                             user.setAccountPassword(passwordEncoder.encode(user.getAccountPassword()));
@@ -67,7 +67,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public Mono<User> findByUsername(String username) {
         // todo implement
-        return this.userRepository.findUserByUsername(username);
+//        return this.userRepository.findUserByUsername(username);
+
+        return userRepository.findByUsername(username)
+                .switchIfEmpty(Mono.error(new UserNotFoundException()));
     }
 
     @Override
