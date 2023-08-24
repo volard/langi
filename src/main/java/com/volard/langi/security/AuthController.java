@@ -7,14 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,12 +24,12 @@ public class AuthController {
     private final PasswordEncoder encoder;
 
     @PostMapping("/signup")
-    public Mono<User> signup(@RequestBody User user){
+    public Mono<User> signup(@RequestBody User user) {
         return userService.registerUser(user);
     }
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<Object>> login(@RequestBody AuthRequestDto request){
+    public Mono<ResponseEntity<Object>> login(@RequestBody AuthRequestDto request) {
 
         return userService
                 .findByUsername(request.username())
@@ -59,7 +56,7 @@ public class AuthController {
 
 
     @PostMapping("/test")
-    public Mono<ResponseEntity<String>> test(){
+    public Mono<ResponseEntity<String>> test() {
         throw new UserNotFoundException();
     }
 }
