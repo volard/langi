@@ -1,4 +1,15 @@
 server:
+  ssl:
+    enabled: true
+    protocol: TLS
+    key-store-type: PKCS12
+    key-store: classpath:keystore/langi_cert.p12
+    key-alias: langi_cert
+    enabled-protocols: TLSv1.2
+    client-auth: need
+    trust-store: classpath:keystore/truststore.p12
+
+
   error:
     include-message: always
     include-binding-errors: always
@@ -11,12 +22,3 @@ spring:
       host: "localhost"
       port: 27017
       database: "main"
-#jwt:
-#  password:
-#    encoder:
-#      secret: FZK2DZ82odqS13e8aENggaMbb_fAkl-nJL4AEVBX43g
-#      iteration: 64
-#      keylength: 256
-#  secret: b5f59337a612a2a7dc07328f3e7d1a04722967c7f06df20a499a7d3f91ff2a7e
-#  expiration: 3600
-#  issuer: proselyte
