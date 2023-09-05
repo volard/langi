@@ -1,14 +1,20 @@
-package com.volard.langi.security;
+package com.volard.langi.security.utils;
 
+import com.volard.langi.security.AuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+/**
+ * Strategy used for persisting a {@link SecurityContext} between requests.
+ * @see ServerSecurityContextRepository
+ */
 @RequiredArgsConstructor
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
@@ -24,14 +30,14 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
      */
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
-        return null;
+        throw new UnsupportedOperationException("Not supported yet. And I don't know what's this");
     }
 
     /**
      * Loads the SecurityContext associated with the {@link ServerWebExchange}
      *
      * @param exchange the exchange to look up the {@link SecurityContext}
-     * @return the {@link SecurityContext} to lookup or empty if not found. Never null
+     * @return the {@link SecurityContext} to look up or empty if not found. Never null
      */
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
@@ -40,6 +46,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
                 .flatMap(authHeader -> {
                     String authToken = authHeader.substring(authScheme.length());
                     Authentication auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
+
                     return this.authenticationManager.authenticate(auth).map(SecurityContextImpl::new);
                 });
     }

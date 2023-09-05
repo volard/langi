@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
@@ -18,21 +19,26 @@ import java.util.UUID;
  */
 @Service
 public class JwtService {
-    @Value("${jwt.expiration}")
+    @Value("${application.security.jwt.expiration}")
     private int expirationTimeInSeconds;
 
-    @Value("${jwt.audience}")
+    @Value("${application.security.jwt.audience}")
     private String audience;
 
-    @Value("${jwt.issuer}")
+    @Value("${application.security.jwt.issuer}")
     private String issuer;
+
+    @Value("${application.security.jwt.secret-key}")
+    private String secret;
+
+    @Value("${application.security.jwt.refresh-token.expiration}")
+    private int refreshExpiration;
 
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
 
     private final KeyPair keyPair = Keys.keyPairFor(signatureAlgorithm);
 
     public String createJwt(String userId){
-
 
         return Jwts.builder()
 

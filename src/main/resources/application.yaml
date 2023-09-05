@@ -5,9 +5,9 @@ server:
     key-store-type: PKCS12
     key-store: classpath:keystore/langi_cert.p12
     key-alias: langi_cert
-    enabled-protocols: TLSv1.2
+    enabled-protocols: TLSv1.3
     client-auth: need
-    trust-store: classpath:keystore/truststore.p12
+#    trust-store: classpath:keystore/truststore.p12
 
 
   error:

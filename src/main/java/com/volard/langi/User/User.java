@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor // Empty constructor is required by the data layer and JSON (maybe)
 @AllArgsConstructor
 @Data
+@Builder
 public class User implements UserDetails, CredentialsContainer {
     @Id
     private String id;

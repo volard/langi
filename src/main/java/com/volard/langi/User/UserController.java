@@ -1,11 +1,15 @@
 package com.volard.langi.User;
 
 import com.volard.langi.exception.UserNotFoundException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.security.KeyPair;
 
 @RestController
 public class UserController {
@@ -50,5 +54,11 @@ public class UserController {
         return this.userService.findById(id).flatMap(
                 user1 -> Mono.just(ResponseEntity.ok().body(user1))
         ).switchIfEmpty(Mono.error(new UserNotFoundException()));
+    }
+
+    @GetMapping("/prikol")
+    private String prikol(){
+        KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
+        return String.format("Public: %s\n\n\nPrivate: %s", keyPair.getPublic().toString(), keyPair.getPrivate().toString());
     }
 }
